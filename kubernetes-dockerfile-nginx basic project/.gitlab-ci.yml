@@ -1,0 +1,27 @@
+stages:
+  - docker_build_web1
+  - docker_build_web2
+
+variables:
+  DOCKER_HUB_REPOSITORIO: $DOCKER_HUB_LOGIN/nginx
+  IMAGE_NAME: nginx
+
+docker_build_web1:
+  stage: docker_build_web1
+  image: docker:latest
+  script:
+    - echo $DOCKER_HUB_LOGIN
+    - echo $DOCKER_HUB_PASSWORD
+    - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD
+    - docker build -t $IMAGE_NAME /web1
+    - docker tag $IMAGE_NAME $DOCKER_HUB_REPOSITORIO:nginxteste
+    - docker push $DOCKER_HUB_REPOSITORIO:$IMAGE_NAME-$CI_JOB_NAME
+
+docker_build_web2:
+  stage: docker_build_web2
+  image: docker:latest
+  script:
+    - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD
+    - docker build -t $IMAGE_NAME /web2
+    - docker tag $IMAGE_NAME $DOCKER_HUB_REPOSITORIO:$IMAGE_NAME-$
+    - docker push $DOCKER_HUB_REPOSITORIO:$IMAGE_NAME-$CI_JOB_NAME 
